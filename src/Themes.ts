@@ -7,4 +7,5 @@ export const lightTheme: DefaultTheme = {
     accent: "#F13030",
     darkAccent: "#5A0001",
     basic: "#FFFFFF",
+    disabled: "#333333",
 };

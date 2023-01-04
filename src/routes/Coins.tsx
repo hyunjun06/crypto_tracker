@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import React from "react";
+import { useQuery } from "react-query";
+import { fetchCoins } from "../api";
 
 const Container = styled.div`
     display: flex;
@@ -8,6 +11,8 @@ const Container = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
+    max-width: 480px;
+    margin: 0 auto;
 `;
 
 const Header = styled.header`
@@ -21,7 +26,7 @@ const Title = styled.h1`
     font-weight: 900;
     color: ${({ theme }) => theme.textColor};
     text-align: left;
-    margin-left: 1rem;
+    margin-left: 2rem;
 `;
 
 const CoinsList = styled.ul`
@@ -33,7 +38,7 @@ const Coin = styled.li`
     color: ${({ theme }) => theme.textColor};
     font-weight: 100;
     padding: 20px;
-    margin: 0 2em 1em 2em;
+    margin: 0 2rem 1rem 2rem;
     border-radius: 1em;
     display: flex;
     flex-direction: row;
@@ -56,81 +61,19 @@ const Coin = styled.li`
     }
 `;
 
-const coins = [
-	{
-		id: "btc-bitcoin",
-		name: "Bitcoin",
-		symbol: "BTC",
-		rank: 1,
-		is_new: false,
-		is_active: true,
-		type: "coin",
-	},
-	{
-		id: "eth-ethereum",
-		name: "Ethereum",
-		symbol: "ETH",
-		rank: 2,
-		is_new: false,
-		is_active: true,
-		type: "coin",
-	},
-	{
-		id: "usdt-tether",
-		name: "Tether",
-		symbol: "USDT",
-		rank: 3,
-		is_new: false,
-		is_active: true,
-		type: "token",
-	},
-	{
-		id: "usdc-usd-coin",
-		name: "USD Coin",
-		symbol: "USDC",
-		rank: 4,
-		is_new: false,
-		is_active: true,
-		type: "token",
-	},
-	{
-		id: "bnb-binance-coin",
-		name: "Binance Coin",
-		symbol: "BNB",
-		rank: 5,
-		is_new: false,
-		is_active: true,
-		type: "coin",
-	},
-	{
-		id: "xrp-xrp",
-		name: "XRP",
-		symbol: "XRP",
-		rank: 6,
-		is_new: false,
-		is_active: true,
-		type: "coin",
-	},
-	{
-		id: "busd-binance-usd",
-		name: "Binance USD",
-		symbol: "BUSD",
-		rank: 7,
-		is_new: false,
-		is_active: true,
-		type: "token",
-	},
-];
-
-interface CoinItemProps {
-    id: string,
-    name: string,
-    symbol: string,
+interface ICoin {
+    id: string;
+    name: string;
+    symbol: string; 
+    rank: number; 
+    is_new: boolean; 
+    is_active: boolean; 
+    type: string; 
 };
 
-const CoinItem = (coin: CoinItemProps) => (
-    <Link to={coin.id}>
-        <Coin key={coin.id}>
+const CoinItem: React.FC<{coin: ICoin}> = ({ coin }) => (
+    <Link to={coin.id} state={coin.name}>
+        <Coin>
             <h2>{coin.name}</h2>
             <h3>{coin.symbol}</h3>
         </Coin>
@@ -138,16 +81,22 @@ const CoinItem = (coin: CoinItemProps) => (
 );
 
 function Coins() {
+    const { isLoading, data } = useQuery<ICoin[]>("coins", fetchCoins);    
+
     return (
         <Container>
             <Header>
                 <Title>Coins</Title>
             </Header>
-            <CoinsList>
-                {coins.map((coin) => (
-                    <CoinItem id={coin.id} name={coin.name} symbol={coin.symbol}/>
-                ))}
-            </CoinsList>
+            {isLoading ? (
+                <h1>Loading...</h1>
+            ) : (
+                <CoinsList>
+                    {data?.slice(0, 100).map((coin) => (
+                        <CoinItem coin={coin} key={coin.id}/>
+                    ))}
+                </CoinsList>
+            )}
         </Container>
     );
 }

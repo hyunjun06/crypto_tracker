@@ -8,5 +8,6 @@ declare module "styled-components" {
         accent: string;
         darkAccent: string;
         basic: string;
+        disabled: string;
     };
 };
