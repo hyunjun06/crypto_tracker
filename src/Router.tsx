@@ -4,6 +4,7 @@ import Coins from "./routes/Coins";
 import Coin from "./routes/Coin";
 import Chart from "./routes/Chart";
 import Price from "./routes/Price";
+import NoCoinError from "./NoCoinError";
 
 const router =  createBrowserRouter([
     {
@@ -26,7 +27,8 @@ const router =  createBrowserRouter([
                         path: "price",
                         element: <Price />
                     }
-                ]
+                ],
+                errorElement: <NoCoinError />
             }
         ]
     }    
